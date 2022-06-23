@@ -23,13 +23,13 @@ ActiveRecord::Schema.define(version: 2022_06_15_030409) do
     t.integer "height"
     t.integer "waist"
     t.integer "hip"
-    t.integer "trainer_id"
+    t.integer "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["trainer_id"], name: "index_clients_on_trainer_id"
+    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
-  create_table "trainers", force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email"
     t.string "password_digest"
@@ -40,5 +40,5 @@ ActiveRecord::Schema.define(version: 2022_06_15_030409) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  add_foreign_key "clients", "trainers"
+  add_foreign_key "clients", "users"
 end

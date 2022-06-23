@@ -11,7 +11,7 @@ class CreateClients < ActiveRecord::Migration[6.1]
       t.integer :height
       t.integer :waist
       t.integer :hip
-      t.belongs_to :trainer, foreign_key: true
+      t.belongs_to :user, foreign_key: true
 
       t.timestamps
     end

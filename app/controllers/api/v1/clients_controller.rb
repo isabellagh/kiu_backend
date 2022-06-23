@@ -1,41 +1,44 @@
 class Api::V1::ClientsController < ApplicationController
 
-    before_action :set_trainers
-
-  def index
-    @clients = @trainer.clients
-    render json: @clients
-  end
-    
-  def show
-    @client = Client.find(params[:id])
-    render json: @client
-  end
+  def index 
+      if logged_in?
+        @clients = current_user.clients
+        render json: @clients
+      else
+        render json: {
+          error: "Not logged in", status: :unauthorized
+        }
+      end 
+    end
   
-  def create
-    @client = @trainer.client.build(client_params)
-    if @client.save 
-      render json: @client
-    else  
-      render json: {error: 'Error creating client'}
-     end
-  end
-    
-    
-  def destroy
-    @client = Client.find(params[:id])
-    @client.destroy 
-    render json: @client.id
-  end
-    
-private
+    def create 
+      @client = current_user.clients.new(client_params)
+      
+      # binding.pry
+      
+      if @client.save
+        # render json: @client, status: :created
 
-  def set_trainers
-    @trainer = Trainer.find(params[:trainer_id])
-  end
-    
-  def client_params
-    params.require(:client).permit(:name, :email, :image, :gender, :goal, :age, :weight, :height, :waist, :hip, :trainer_id)
-  end
-    
+        render json: @client, status: :created, location: @client
+      else
+        render json: @client.errors, status: :unprocessable_entity
+      end
+    end
+  
+    def show
+      @client = Client.find_by_id(params[:id])
+      render json: @client
+    end
+  
+    def destroy
+      @client = Client.find_by_id(params[:id])
+      @client.destroy
+      render json: @client.id
+    end
+      
+    private
+  
+    def client_params
+      params.require(:client).permit(:name, :age, :gender, :email, :goal, :image, :weight, :height, :waist, :hip, :user_id)
+    end
 end
